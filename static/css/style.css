@@ -1,0 +1,357 @@
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #1a1a1a;
+    --accent-color: #2196F3;
+    --text-color: #ffffff;
+    --text-secondary: #b3b3b3;
+    --success-color: #00E676;
+    --danger-color: #FF1744;
+    --bg-color: #121212;
+    --card-bg: #1E1E1E;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-green: #4caf50;
+    --accent-red: #f44336;
+    --border-radius: 12px;
+    --spacing: 20px;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --gradient-start: #1a1a1a;
+    --gradient-end: #2d2d2d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+    line-height: 1.8;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    border-radius: 20px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+h1 {
+    font-size: 3rem;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+}
+
+h2 {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+}
+
+#last-update {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.price-section {
+    background: linear-gradient(135deg, var(--card-bg), var(--gradient-end));
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    margin-bottom: 3rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.price-section:hover {
+    transform: translateY(-5px);
+}
+
+.price {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    letter-spacing: 1px;
+}
+
+.price-up {
+    color: var(--success-color);
+}
+
+.price-down {
+    color: var(--danger-color);
+}
+
+.trend-indicator {
+    font-size: 3rem;
+    margin-left: 1.5rem;
+}
+
+.analysis-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.analysis-card {
+    background: linear-gradient(135deg, var(--card-bg), var(--gradient-end));
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+}
+
+.analysis-card:hover {
+    transform: translateY(-5px);
+}
+
+.analysis-card h2 {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+}
+
+.analysis-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.analysis-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-item:last-child {
+    border-bottom: none;
+}
+
+.analysis-label {
+    color: var(--text-secondary);
+    min-width: 120px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.analysis-value {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.analysis-value strong {
+    color: var(--accent-color);
+}
+
+.analysis-value .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.indicator.bullish {
+    background-color: var(--success-color);
+}
+
+.indicator.bearish {
+    background-color: var(--danger-color);
+}
+
+.indicator.neutral {
+    background-color: var(--text-secondary);
+}
+
+/* 進場信號樣式 */
+.entry-signal {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.entry-signal h3 {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.entry-signal .analysis-item {
+    padding: 0.8rem 0;
+}
+
+.entry-signal .analysis-label {
+    color: var(--text-secondary);
+    min-width: 120px;
+}
+
+.entry-signal .analysis-value {
+    color: var(--text-color);
+}
+
+.entry-signal .analysis-value.long {
+    color: var(--success-color);
+}
+
+.entry-signal .analysis-value.short {
+    color: var(--danger-color);
+}
+
+.risk-reward {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.risk-reward .analysis-item {
+    flex: 1;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    margin-top: 3rem;
+    font-size: 1rem;
+}
+
+.error {
+    color: var(--danger-color);
+    padding: 1.5rem;
+    border: 1px solid var(--danger-color);
+    border-radius: 15px;
+    margin: 1.5rem 0;
+    background-color: rgba(255, 23, 68, 0.1);
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* 動畫效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.price-section, .analysis-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+    .analysis-section {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .price {
+        font-size: 3rem;
+    }
+
+    .price-section, .analysis-card {
+        padding: 2rem;
+    }
+
+    .liquidity-status p {
+        font-size: 1.1rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .liquidity-status p strong {
+        min-width: 120px;
+        font-size: 1rem;
+    }
+}
+
+/* 高亮效果 */
+.highlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    to {
+        left: 100%;
+    }
+} 

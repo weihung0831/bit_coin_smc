@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比特幣技術分析儀表板</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>比特幣技術分析儀表板</h1>
+            <p id="last-update">最後更新：載入中...</p>
+        </header>
+
+        <main>
+            <section class="price-section">
+                <h2>當前價格</h2>
+                <div id="current-price" class="price">載入中...</div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="analysis-card">
+                    <h2>市場結構分析</h2>
+                    <div id="market-structure">
+                        <p>載入中...</p>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h2>流動性分析</h2>
+                    <div id="liquidity-analysis">
+                        <p>載入中...</p>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h2>進場信號</h2>
+                    <div id="entry-signal">
+                        <p>未有進場信號</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2025 比特幣技術分析儀表板</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
