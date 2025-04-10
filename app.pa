@@ -1,0 +1,113 @@
+from flask import Flask, render_template, jsonify, send_from_directory
+import pandas as pd
+from bitcoin_smc import *
+import threading
+import time
+import ccxt
+from datetime import datetime
+import os
+
+app = Flask(__name__, 
+    static_folder='static',
+    template_folder='templates'
+)
+
+# 全局變量用於存儲最新的分析結果
+latest_analysis = None
+latest_price = None
+analysis_lock = threading.Lock()
+price_lock = threading.Lock()
+
+def update_price():
+    """更新最新價格的背景任務"""
+    global latest_price
+    exchange = ccxt.binance({'enableRateLimit': True})
+    
+    while True:
+        try:
+            ticker = exchange.fetch_ticker('BTC/USDT')
+            with price_lock:
+                latest_price = {
+                    'price': ticker['last'],
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                }
+            time.sleep(1)  # 每秒更新一次
+        except Exception as e:
+            print(f"更新價格時發生錯誤：{str(e)}")
+            time.sleep(1)
+
+def update_analysis():
+    """更新分析數據的背景任務"""
+    global latest_analysis
+    exchange = ccxt.binance({'enableRateLimit': True})
+    
+    while True:
+        try:
+            df = get_btc_data(exchange, timeframe="5m")
+            if df is not None:
+                # 獲取最新的進場信號
+                latest_entry = df[df['entry_signal'] != 'none'].iloc[-1] if len(df[df['entry_signal'] != 'none']) > 0 else None
+                
+                # 計算風險報酬比
+                entry_signal_data = None
+                if latest_entry is not None:
+                    if latest_entry['entry_signal'] == 'long':
+                        risk = latest_entry['price'] - latest_entry['stop_loss']
+                        reward1 = latest_entry['tp1_price'] - latest_entry['price']
+                        reward2 = latest_entry['tp2_price'] - latest_entry['price']
+                    else:  # short
+                        risk = latest_entry['stop_loss'] - latest_entry['price']
+                        reward1 = latest_entry['price'] - latest_entry['tp1_price']
+                        reward2 = latest_entry['price'] - latest_entry['tp2_price']
+
+                    rr1 = abs(reward1 / risk) if risk != 0 else 0
+                    rr2 = abs(reward2 / risk) if risk != 0 else 0
+
+                    entry_signal_data = {
+                        'signal': latest_entry['entry_signal'],
+                        'direction': '做多 ⬆️' if latest_entry['entry_signal'] == 'long' else '做空 ⬇️',
+                        'price': f"${latest_entry['price']:,.2f}",
+                        'stop_loss': f"${latest_entry['stop_loss']:,.2f}",
+                        'tp1_price': f"${latest_entry['tp1_price']:,.2f}",
+                        'tp2_price': f"${latest_entry['tp2_price']:,.2f}",
+                        'risk_reward1': f"{rr1:.2f}",
+                        'risk_reward2': f"{rr2:.2f}"
+                    }
+
+                with analysis_lock:
+                    latest_analysis = {
+                        'timestamp': df['timestamp'].iloc[-1].strftime('%Y-%m-%d %H:%M:%S'),
+                        'current_price': float(df['close'].iloc[-1]),
+                        'market_structure': {
+                            'trend': str(df['market_structure'].iloc[-1]).lower(),
+                            'support': float(df['low'].iloc[-20:].min()),
+                            'resistance': float(df['high'].iloc[-20:].max())
+                        },
+                        'ob_info': {
+                            'type': str(df[df['is_ob']].iloc[-1]['ob_type'] if len(df[df['is_ob']]) > 0 else 'none'),
+                            'high': float(df[df['is_ob']].iloc[-1]['ob_high'] if len(df[df['is_ob']]) > 0 else 0),
+                            'low': float(df[df['is_ob']].iloc[-1]['ob_low'] if len(df[df['is_ob']]) > 0 else 0)
+                        },
+                        'fvg_info': {
+                            'type': str(df[df['fvg_type'] != 'none'].iloc[-1]['fvg_type'] if len(df[df['fvg_type'] != 'none']) > 0 else 'none'),
+                            'high': float(df[df['fvg_type'] != 'none'].iloc[-1]['fvg_high'] if len(df[df['fvg_type'] != 'none']) > 0 else 0),
+                            'low': float(df[df['fvg_type'] != 'none'].iloc[-1]['fvg_low'] if len(df[df['fvg_type'] != 'none']) > 0 else 0)
+                        },
+                        'entry_signal': entry_signal_data
+                    }
+            time.sleep(300)  # 每5分鐘更新一次分析
+        except Exception as e:
+            print(f"更新分析時發生錯誤：{str(e)}")
+            time.sleep(60)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/price')
+def get_price():
+    """獲取最新價格"""
+    with price_lock:
+        if latest_price is None:
+            return jsonify({'error': '價格數據尚未準備好'})
+        return jsonify(latest_price)
